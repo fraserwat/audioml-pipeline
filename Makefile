@@ -9,7 +9,13 @@ setup:
 # Command to download and unzip data. Each download+unzip is batched into a single subshell,
 # in order to control scope/dependencies over each block.
 download-data:
-	@echo "Downloading and extracting datasets..."
+# Get rid of any old data
+	@if [ -d data/noisy ] || [ -d data/clean ]; then \
+		echo "Replacing old datasets..."; \
+		rm -rf data/noisy data/clean; \
+	else \
+		echo "Downloading and extracting datasets..."; \
+	fi
 	@mkdir -p data/noisy data/clean
 
 # Download and unzip noisy data
@@ -17,7 +23,7 @@ download-data:
 	@{ \
 		curl -o data/noisy.zip "https://datashare.ed.ac.uk/bitstream/handle/10283/2791/noisy_testset_wav.zip?sequence=5&isAllowed=y"; \
 		echo "Download completed. Unzipping noisy dataset..."; \
-		unzip -o data/noisy.zip -d data/noisy; \
+		unzip -o -j data/noisy.zip -d data/noisy; \
 		rm data/noisy.zip; \
 		echo "Noisy dataset processed."; \
 	}
@@ -27,7 +33,7 @@ download-data:
 	@{ \
 		curl -o data/clean.zip "https://datashare.ed.ac.uk/bitstream/handle/10283/2791/clean_testset_wav.zip?sequence=1&isAllowed=y"; \
 		echo "Download completed. Unzipping clean dataset..."; \
-		unzip -o data/clean.zip -d data/clean; \
+		unzip -o -j data/clean.zip -d data/clean; \
 		rm data/clean.zip; \
 		echo "Clean dataset processed."; \
 	}
